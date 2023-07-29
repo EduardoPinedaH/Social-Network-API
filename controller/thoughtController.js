@@ -44,7 +44,7 @@ const thoughtController = {
             runValidators: true,
             new: true
         }).then((thought) => {
-            !thought ? res.status(404).json({message: 'No thought found'}) : res.json(thought);
+            !thought ? res.status(404).json({message: "No thought found"}) : res.json(thought);
         }).catch((err) => res.status(500).json(err));
     },
     // Delete thought by id
@@ -52,19 +52,19 @@ const thoughtController = {
         Thought.findOneAndDelete({_id: req.params.id})
         .then((thought) => {
             if(!thought){
-                res.status(404).json({message: 'No thought found'}) 
+                res.status(404).json({message: "No thought found"}) 
             } return User.findOneAndUpdate(
                 {_id:req.body.userID},
                 {$pull:{thoughts:thought._id}},
                 {new:true}
             )
-        }).then(() => res.json({message: 'Thought deleted!'})).catch((err) => res.status(500).json(err));
+        }).then(() => res.json({message: "Thought deleted!"})).catch((err) => res.status(500).json(err));
     },
 
 
 // Add Reaction
 addReaction(req, res) {
-    console.log('You are adding a reaction');
+    console.log("You are adding a reaction");
     console.log(req.body);
     Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
@@ -75,7 +75,7 @@ addReaction(req, res) {
         !thought
             ? res
                 .status(404)
-                .json({ message: 'No friend found' })
+                .json({ message: "No friend found" })
             : res.json(thought)
     )
     .catch((err) => res.status(500).json(err));
@@ -96,7 +96,7 @@ console.log(req.params)
         !thought
             ? res
                 .status(404)
-                .json({ message: 'No thought found' })
+                .json({ message: "No thought found" })
             : res.json(thought)
     )
     .catch((err) => res.status(500).json(err));
