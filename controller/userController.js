@@ -1,5 +1,5 @@
 const req = require('express/lib/request');
-const { Thought, User } = require('../models');
+const { Thought , User } = require('../models');
 
 const userController = {
     // Create user
@@ -32,6 +32,41 @@ const userController = {
     },
     // Delete user
     deleteUser(req,res) {
-        
+        User.findOneAndDelete(
+            { _id: req.params.id }
+        ).then((user) => !user ? res.status(404).json({ message: 'No user found' }) : Thought.deleteMany({ _id: { $in: user.thoughts}}))
+        .then(() => res.json({ message: 'User and associated deleted!' }))
+        .catch((err) => res.status(500).json(err));
+    },
+
+    // Add a friend
+    addFriend(req, res) {
+        console.log('You are adding a friend');
+        console.log(req.body);
+        User.findOneAndUpdate(
+            {_id: req.params.id}, 
+            {$addToSet: {
+                    friends: req.params.friendsId
+                }
+            },
+            {
+                runValidators: true,
+                new: true
+            })
+            .then((user) => !user ? res.status(404).json({ message: 'No friend found' }) : res.json(user))
+            .catch((err) => res.status(500).json(err));
+    },
+    // Remove friend
+    removeFriend(req, res) {
+        User.findOneAndUpdate(
+            {_id: req.params.id}, 
+            {$pull: {friends: req.params.friendsId}}, 
+            {runValidators: true,
+            new: true
+        })
+        .then((user) => !user ? res.status(404).json({ message: 'No friend found' }) : res.json(user))
+        .catch((err) => res.status(500).json(err));
     }
 }
+
+module.exports = userController;
